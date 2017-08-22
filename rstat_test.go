@@ -192,14 +192,14 @@ func TestPlatform(t *testing.T) {
 		}
 
 		if cmd[0] == '[' && cmd[len(cmd)-1] == ']' {
-			t.Errorf("Unexpected kernel process %s: %q", pid, cmd)
+			t.Errorf("Unexpected kernel process %d: %q", pid, cmd)
 			return true
 		}
 
 		val, err := strconv.ParseFloat(stat["%CPU"], 64)
 
 		if err != nil {
-			t.Errorf("Invalid floating point value for \"%CPU\": %q", stat["%CPU"])
+			t.Errorf("Invalid floating point value for \"%%CPU\": %q", stat["%CPU"])
 			return true
 		}
 
@@ -207,7 +207,7 @@ func TestPlatform(t *testing.T) {
 		val, err = strconv.ParseFloat(stat["%MEM"], 64)
 
 		if err != nil {
-			t.Errorf("Invalid floating point value for \"%MEM\": %q", stat["%MEM"])
+			t.Errorf("Invalid floating point value for \"%%MEM\": %q", stat["%MEM"])
 			return true
 		}
 

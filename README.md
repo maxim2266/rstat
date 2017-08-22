@@ -5,7 +5,7 @@
 
 Library `rstat` provides basic functionality for periodical health check of IoT devices running Linux.
 It has an API for invoking `ps` command on a remote device via `ssh`, returning a process tree with the
-requested metrics of each process.
+requested metrics for each process.
 
 Usage example:
 

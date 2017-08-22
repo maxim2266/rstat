@@ -112,8 +112,8 @@ func iterNodes(stack [][]*ProcNode, pred func(int, map[string]string) bool) (*Pr
 	return nil, stack[:len(stack)-1]
 }
 
-// ProcTree takes an ssh command and an optional list of columns for 'ps' command, and returns
-// a process three starting at pid 1, or an error. The ssh command parameter is usually supplied
+// ProcTree takes an ssh command and an optional list of columns, and returns
+// a process tree starting at pid 1, or an error. The ssh command parameter is usually supplied
 // by the SSHCommand function. It can be set to nil, in which case the 'ps' command gets invoked
 // on the local machine. The list of columns should include only those expected by the 'ps' command
 // on the target machine, try 'ps L' for the full list. An empty column list results in 'ps -eF'
