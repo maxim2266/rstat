@@ -1,0 +1,13 @@
+UID        xPID  PPID  C    SZ   RSS PSR STIME TTY          TIME CMD
+root         1     0  0  1355  3828   0 Aug20 ?        00:00:15 /sbin/init splash
+root       117     1  0  2025  4296   0 Aug20 ?        00:00:08 /lib/systemd/systemd-journald
+root       120     1  0  3000  3028   0 Aug20 ?        00:00:00 /lib/systemd/systemd-udevd
+avahi      346     1  0   995  2584   0 Aug20 ?        00:00:01 avahi-daemon: running [raspberrypi.local]
+root       347     1  0  1264  2348   0 Aug20 ?        00:00:00 /usr/sbin/cron -f
+root       349     1  0  7809  3024   0 Aug20 ?        00:00:01 /usr/sbin/rsyslogd -n
+avahi      350   346  0   965  1512   0 Aug20 ?        00:00:00 avahi-daemon: chroot helper
+root      2233   399 46  3034  5124   0 15:26 ?        00:00:00 sshd: pi [priv]     
+pi        2239     1  0  1240  3396   0 15:26 ?        00:00:00 /lib/systemd/systemd --user
+pi        2242  2239  0  1712  2064   0 15:26 ?        00:00:00 (sd-pam)         
+pi        2245  2233  0  3034  3976   0 15:26 ?        00:00:00 sshd: pi@notty      
+pi        2247  2245  0  1181  2156   0 15:26 ?        00:00:00 ps -eF

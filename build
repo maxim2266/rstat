@@ -1,0 +1,21 @@
+#!/bin/sh
+
+SRC=rstat.go
+TEST_SRC=rstat_test.go
+
+fmt() {
+	gofmt -w -s $@ && goimports -w $@
+}
+
+case $1 in
+	"")
+		fmt $SRC && go build $SRC
+		;;
+	"test")
+		fmt $SRC $TEST_SRC && go test
+		;;
+	*)	echo "ERROR: Invalid target: $1" >&2 ; exit 1
+		;;
+esac
+
+exit $?

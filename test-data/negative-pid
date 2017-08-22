@@ -1,0 +1,7 @@
+UID        PID  PPID  C    SZ   RSS PSR STIME TTY          TIME CMD
+root         1     0  0  1355  3828   0 Aug20 ?        00:00:15 /sbin/init splash
+root       117     1  0  2025  4296   0 Aug20 ?        00:00:08 /lib/systemd/systemd-journald
+root       -120     1  0  3000  3028   0 Aug20 ?        00:00:00 /lib/systemd/systemd-udevd
+avahi      346     1  0   995  2584   0 Aug20 ?        00:00:01 avahi-daemon: running [raspberrypi.local]
+root       369     1  0  6331  9452   0 Aug20 ?        00:00:01 /usr/sbin/cupsd -f
+root       372     1  0  2558  4904   0 Aug20 ?        00:00:00 /usr/sbin/cups-browsed

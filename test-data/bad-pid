@@ -1,0 +1,24 @@
+UID        PID  PPID  C    SZ   RSS PSR STIME TTY          TIME CMD
+root         1     0  0  1355  3828   0 Aug20 ?        00:00:15 /sbin/init splash
+root       $117     1  0  2025  4296   0 Aug20 ?        00:00:08 /lib/systemd/systemd-journald
+root       120     1  0  3000  3028   0 Aug20 ?        00:00:00 /lib/systemd/systemd-udevd
+avahi      346     1  0   995  2584   0 Aug20 ?        00:00:01 avahi-daemon: running [raspberrypi.local]
+root       347     1  0  1264  2348   0 Aug20 ?        00:00:00 /usr/sbin/cron -f
+root       349     1  0  7809  3024   0 Aug20 ?        00:00:01 /usr/sbin/rsyslogd -n
+avahi      350   346  0   965  1512   0 Aug20 ?        00:00:00 avahi-daemon: chroot helper
+message+   351     1  0  1402  3072   0 Aug20 ?        00:00:05 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation
+root       360     1  0   637  1704   0 Aug20 ?        00:00:01 /sbin/dhcpcd -q -b
+root       365     1  0   960  2444   0 Aug20 ?        00:00:02 /lib/systemd/systemd-logind
+root       369     1  0  6331  9452   0 Aug20 ?        00:00:01 /usr/sbin/cupsd -f
+root       372     1  0  2558  4904   0 Aug20 ?        00:00:00 /usr/sbin/cups-browsed
+root       399     1  0  1963  4280   0 Aug20 ?        00:00:00 /usr/sbin/sshd -D
+nobody     439     1  0   569  1448   0 Aug20 ?        00:00:01 /usr/sbin/thd --daemon --triggers /etc/triggerhappy/triggers.d/ --socket /var/run/thd.socket --pidfile /var/run/thd.pid --user nobody /dev/input/event*
+ntp        473     1  0  1418  3824   0 Aug20 ?        00:00:12 /usr/sbin/ntpd -p /var/run/ntpd.pid -g -u 106:111
+root       486     1  0  1009  1744   0 Aug20 tty1     00:00:00 /sbin/agetty --noclear tty1 linux
+root       488     1  0   964  2028   0 Aug20 ?        00:00:00 /sbin/agetty --keep-baud 115200 38400 9600 ttyAMA0 vt102
+colord     498     1  0 11760 12696   0 Aug20 ?        00:00:01 /usr/lib/colord/colord
+root      2233   399 46  3034  5124   0 15:26 ?        00:00:00 sshd: pi [priv]     
+pi        2239     1  0  1240  3396   0 15:26 ?        00:00:00 /lib/systemd/systemd --user
+pi        2242  2239  0  1712  2064   0 15:26 ?        00:00:00 (sd-pam)         
+pi        2245  2233  0  3034  3976   0 15:26 ?        00:00:00 sshd: pi@notty      
+pi        2247  2245  0  1181  2156   0 15:26 ?        00:00:00 ps -eF
