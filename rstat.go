@@ -40,13 +40,13 @@ import (
 )
 
 // SSHCommand is a simple ssh command builder. Parameters 'host' and 'user' are mandatory,
-// others are optional. The 'passw' parameter expects a password, in which case the composed command
-// starts with 'sshpass', and if set to an empty string the result is an 'ssh' command.
-// The last parameter specifies a timeout in seconds, set it to 0 for ssh default. It is generally
-// recommended to set a timeout because the default settings for the 'ssh' command may have this parameter
-// set to some high value. In practice a value of 5 seconds is usually sufficient for dealing with
-// devices on local network. The function does not validate its input, instead relying on the 'ssh' program
-// to produce an error if something is wrong.
+// others are optional. The 'passw' parameter, if not empty, creates a command invoking 'sshpass',
+// otherwise an 'ssh' command is produced. The last parameter specifies the ssh connection timeout
+// in seconds, or 0 for using the platform default. It is generally recommended to give this
+// parameter some reasonable value because the default timeout may be just too long.
+// In practice the value of 5 seconds is usually suitable for dealing with devices on local network.
+// The function does not validate its input, instead relying on the 'ssh' program to produce an error
+// if something goes wrong.
 func SSHCommand(host, user, passw string, seconds uint) (cmd []string) {
 	if len(passw) > 0 {
 		cmd = []string{"sshpass", "-p", passw, "ssh"}
@@ -62,7 +62,7 @@ func SSHCommand(host, user, passw string, seconds uint) (cmd []string) {
 	return
 }
 
-// ProcNode is the node of the process tree. It contains the process pid, a map of metrics
+// ProcNode is the node of the process tree. It contains the process id, a map of metrics
 // as produced by 'ps' program, and a list of child nodes.
 type ProcNode struct {
 	Pid      int
@@ -112,14 +112,14 @@ func iterNodes(stack [][]*ProcNode, pred func(int, map[string]string) bool) (*Pr
 	return nil, stack[:len(stack)-1]
 }
 
-// ProcTree takes an ssh command and an optional list of columns, and returns
-// a process tree starting at pid 1, or an error. The ssh command parameter is usually supplied
-// by the SSHCommand function. It can be set to nil, in which case the 'ps' command gets invoked
-// on the local machine. The list of columns should include only those expected by the 'ps' command
-// on the target machine, try 'ps L' for the full list. An empty column list results in 'ps -eF'
-// invocation. All the columns are returned 'as-is', whatever the 'ps' command on the target machine
-// may produce. For convenience and in order to be able to build a process tree, the values of 'PID'
-// and 'PPID' are always included.
+// ProcTree takes an ssh command and a list of columns for the underlying 'ps' invocation, and returns
+// a process tree rooted at pid 1, or an error. It is often convenient to use the provided
+// SSHCommand() helper for composing ssh command for this function. The command can also be set to nil,
+// in which case the 'ps' command gets invoked on the local machine. The list of columns should include
+// only those expected by the 'ps' command on the target machine, try 'ps L' for the full list. An empty column
+// list results in 'ps -eF' invocation. All the columns are returned 'as-is', without any post-processing.
+// For convenience and in order to be able to build a process tree, 'PID' and 'PPID' columns are
+// always included.
 func ProcTree(ssh []string, columns ...string) (*ProcNode, error) {
 	return pstree(concat(ssh, makePsCommand(columns)))
 }
