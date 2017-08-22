@@ -10,13 +10,16 @@ requested metrics for each process.
 Usage example:
 
 ```Go
+// compose ssh command with the given ip, user, password and timeout in seconds
 ssh := rstat.SSHCommand("192.168.0.16", "pi", "raspberry", 5)
+// request process tree with 3 metrics per process
 root, err := rstat.ProcTree(ssh, "%cpu", "%mem", "cmd")
 
 if err != nil {
 	return err
 }
 
+// iterate the process tree
 root.ForEach(func(pid int, stats map[string]string) {
 	// for this example just print the metrics
 	fmt.Printf("%d %s %s %s %q\n", pid, stats["PPID"], stats["%CPU"], stats["%MEM"], stats["CMD"])
