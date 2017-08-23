@@ -128,7 +128,7 @@ func ProcTree(ssh []string, columns ...string) (*ProcNode, error) {
 }
 
 func pstree(cmd []string) (*ProcNode, error) {
-	//println(strings.Join(cmd, " "))
+	// println(strings.Join(cmd, " "))
 
 	var parser psParser
 
@@ -146,36 +146,58 @@ func makePsCommand(columns []string) []string {
 	}
 
 	// process the column list to remove duplicates
+	var cmd string
+
 	m := make(map[string]int, len(columns))
-	var cmd bool
 
 	for _, c := range columns {
+		// cut off any column width spec
+		if i := strings.IndexByte(c, ':'); i >= 0 {
+			c = c[:i]
+		}
+
+		// column name substitution string
+		var subst string
+
+		if i := strings.IndexByte(c, '='); i >= 0 {
+			c, subst = c[:i], c[i+1:]
+		}
+
+		// see what we've got
 		switch c {
 		// 'cmd' column must be at the end of the list to avoid truncation
 		case "args", "cmd", "command":
-			cmd = true
-		// 'pid' and 'ppid' are always the first two columns
+			if len(subst) > 0 {
+				cmd = "cmd=" + subst
+			} else {
+				cmd = "cmd"
+			}
+
+		// 'pid' and 'ppid' will be added later
 		case "pid", "ppid":
 			// skip
 		default:
-			m[c] = 0
+			if len(subst) > 0 {
+				m[c+"="+subst] = 0
+			} else {
+				m[c] = 0
+			}
 		}
 	}
 
 	// build column list
-	buff := bytes.NewBufferString("pid,ppid")
+	res := []string{"ps", "-ewwo", "pid,ppid"}
 
 	for c := range m {
-		buff.WriteByte(',')
-		buff.WriteString(c)
+		res = append(res, "-o", c)
 	}
 
-	if cmd {
-		buff.WriteString(",cmd")
+	if len(cmd) > 0 {
+		res = append(res, "-o", cmd)
 	}
 
 	// done
-	return []string{"ps", "-ewwo", buff.String()}
+	return res
 }
 
 // parser for 'ps' output

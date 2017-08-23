@@ -59,6 +59,33 @@ func TestSSHCmdBuilder(t *testing.T) {
 	}
 }
 
+func TestCommandBuilder(t *testing.T) {
+	type test struct {
+		cols []string
+		exp  string
+	}
+
+	tests := []test{
+		{nil, "ps -ewwF"},
+		{[]string{"command"}, "ps -ewwo pid,ppid -o cmd"},
+		{[]string{"command=Command:42"}, "ps -ewwo pid,ppid -o cmd=Command"},
+		{[]string{"command="}, "ps -ewwo pid,ppid -o cmd"},
+		{[]string{"pid=XXX:15"}, "ps -ewwo pid,ppid"},
+		{[]string{"start=Start:42", "state=", "util:15"}, "ps -ewwo pid,ppid -o start=Start -o state -o util"},
+	}
+
+	for _, tst := range tests {
+		ss := strings.Split(strings.Join(makePsCommand(tst.cols), " "), " -o ")
+
+		sort.Strings(ss[1:])
+
+		if s := strings.Join(ss, " -o "); s != tst.exp {
+			t.Errorf("Invalid command string:\nexp: %q\ngot: %q", tst.exp, s)
+			return
+		}
+	}
+}
+
 func TestNumberOfRecords(t *testing.T) {
 	n, err := lc("valid-data")
 
