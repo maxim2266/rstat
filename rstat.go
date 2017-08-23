@@ -63,7 +63,9 @@ func SSHCommand(host, user, passw string, seconds uint) (cmd []string) {
 }
 
 // ProcNode is the node of the process tree. It contains the process id, a map of metrics
-// as produced by 'ps' program, and a list of child nodes.
+// as produced by 'ps' program, and a list of child nodes. The metrics are represented
+// as a map from column title (as output by 'ps' command) to the metric value as string.
+// Use 'ps L' on the target machine to get the full list of 'ps' format specifiers and column names.
 type ProcNode struct {
 	Pid      int
 	Stats    map[string]string
@@ -116,8 +118,9 @@ func iterNodes(stack [][]*ProcNode, pred func(int, map[string]string) bool) (*Pr
 // a process tree rooted at pid 1, or an error. It is often convenient to use the provided
 // SSHCommand() helper for composing ssh command for this function. The command can also be set to nil,
 // in which case the 'ps' command gets invoked on the local machine. The list of columns should include
-// only those expected by the 'ps' command on the target machine, try 'ps L' for the full list. An empty column
-// list results in 'ps -eF' invocation. All the columns are returned 'as-is', without any post-processing.
+// only the standard format specifiers for '-o' option of the 'ps' command on the target machine,
+// try 'ps L' for the full list or consult 'ps' man page. An empty column list results in 'ps -eF'
+// invocation. All the metrics are returned 'as-is', without any post-processing.
 // For convenience and in order to be able to build a process tree, 'PID' and 'PPID' columns are
 // always included.
 func ProcTree(ssh []string, columns ...string) (*ProcNode, error) {

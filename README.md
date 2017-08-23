@@ -7,7 +7,7 @@ Library `rstat` provides basic functionality for periodical health check of IoT 
 It has an API for invoking `ps` command on a remote device via `ssh`, returning a process tree with the
 requested metrics for each process.
 
-Usage example:
+#### Usage example:
 
 ```Go
 // compose ssh command with the given ip, user, password and timeout in seconds
