@@ -148,7 +148,7 @@ func makePsCommand(columns []string) []string {
 	// process the column list to remove duplicates
 	var cmd string
 
-	m := make(map[string]int, len(columns))
+	m := make(map[string]struct{}, len(columns))
 
 	for _, c := range columns {
 		// cut off any column width spec
@@ -178,9 +178,9 @@ func makePsCommand(columns []string) []string {
 			// skip
 		default:
 			if len(subst) > 0 {
-				m[c+"="+subst] = 0
+				m[c+"="+subst] = struct{}{}
 			} else {
-				m[c] = 0
+				m[c] = struct{}{}
 			}
 		}
 	}
