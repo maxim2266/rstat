@@ -73,6 +73,7 @@ func TestCommandBuilder(t *testing.T) {
 		{[]string{"pid=XXX:15"}, "ps -ewwo pid,ppid"},
 		{[]string{"start=Start:42", "state=", "util:15"}, "ps -ewwo pid,ppid -o start=Start -o state -o util"},
 		{[]string{"args", "command", "cmd"}, "ps -ewwo pid,ppid -o cmd"},
+		{[]string{"%cpu", "%cpu", "%cpu"}, "ps -ewwo pid,ppid -o %cpu"},
 	}
 
 	for _, tst := range tests {
