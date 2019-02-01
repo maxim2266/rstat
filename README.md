@@ -20,9 +20,9 @@ if err != nil {
 }
 
 // iterate the process tree
-root.ForEach(func(pid int, stats map[string]string) {
-	// for this example just print the metrics
-	fmt.Printf("%d %s %s %s %q\n", pid, stats["PPID"], stats["%CPU"], stats["%MEM"], stats["CMD"])
+root.ForEach(func(node *rstat.ProcNode) {
+	// just for example, print the metrics
+	fmt.Printf("%d %s %s %s %q\n", node.Pid, node.ParentPid, node.Stats["%CPU"], node.Stats["%MEM"], node.Stats["CMD"])
 })
 
 ```
