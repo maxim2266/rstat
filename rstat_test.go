@@ -105,7 +105,7 @@ func TestNumberOfRecords(t *testing.T) {
 
 	var count int
 
-	root.ForEach(func(pid int, _ map[string]string) {
+	root.ForEach(func(_ *ProcNode) {
 		count++
 	})
 
@@ -125,12 +125,11 @@ func TestTree(t *testing.T) {
 
 	tree := make(map[int][]int, 10)
 
-	root.ForEach(func(pid int, stats map[string]string) {
-		tree[pid] = nil
-		ppid, _ := strconv.Atoi(stats["PPID"])
+	root.ForEach(func(node *ProcNode) {
+		tree[node.Pid] = nil
 
-		if ppid != 0 {
-			tree[ppid] = append(tree[ppid], pid)
+		if node.ParentPid != 0 {
+			tree[node.ParentPid] = append(tree[node.ParentPid], node.Pid)
 		}
 	})
 
@@ -212,16 +211,17 @@ func TestPlatform(t *testing.T) {
 
 	var mem, cpu float64
 
-	if root.Find(func(pid int, stat map[string]string) bool {
+	if root.Find(func(node *ProcNode) bool {
+		stat := node.Stats
 		cmd := stat["CMD"]
 
 		if len(cmd) == 0 {
-			t.Errorf("Command string for pid %d is not found or empty", pid)
+			t.Errorf("Command string for pid %d is not found or empty", node.Pid)
 			return true
 		}
 
 		if cmd[0] == '[' && cmd[len(cmd)-1] == ']' {
-			t.Errorf("Unexpected kernel process %d: %q", pid, cmd)
+			t.Errorf("Unexpected kernel process %d: %q", node.Pid, cmd)
 			return true
 		}
 

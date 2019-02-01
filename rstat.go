@@ -62,28 +62,28 @@ func SSHCommand(host, user, passw string, seconds uint) (cmd []string) {
 	return
 }
 
-// ProcNode is the node of the process tree. It contains the process id, a map of metrics
+// ProcNode is the node of the process tree. It contains the process id, parent process id, a map of metrics
 // as produced by 'ps' program, and a list of child nodes. The metrics are represented
 // as a map from column title (as output by 'ps' command) to the metric value as string.
 // Use 'ps L' on the target machine to get the full list of 'ps' format specifiers and column names.
 type ProcNode struct {
-	Pid      int
-	Stats    map[string]string
-	Children []*ProcNode `json:",omitempty"`
+	Pid, ParentPid int
+	Stats          map[string]string
+	Children       []*ProcNode `json:",omitempty"`
 }
 
 // ForEach applies the given function to each node of the process tree recursively.
-func (root *ProcNode) ForEach(fn func(int, map[string]string)) {
-	root.Find(func(pid int, stats map[string]string) bool {
-		fn(pid, stats)
+func (root *ProcNode) ForEach(fn func(*ProcNode)) {
+	root.Find(func(node *ProcNode) bool {
+		fn(node)
 		return false
 	})
 }
 
 // Find recursively applies the given predicate to each node of the process tree. It returns
 // the first node for which the predicate is 'true'.
-func (root *ProcNode) Find(pred func(int, map[string]string) bool) *ProcNode {
-	if pred(root.Pid, root.Stats) {
+func (root *ProcNode) Find(pred func(*ProcNode) bool) *ProcNode {
+	if pred(root) {
 		return root
 	}
 
@@ -97,11 +97,11 @@ func (root *ProcNode) Find(pred func(int, map[string]string) bool) *ProcNode {
 	return node
 }
 
-func iterNodes(stack [][]*ProcNode, pred func(int, map[string]string) bool) (*ProcNode, [][]*ProcNode) {
+func iterNodes(stack [][]*ProcNode, pred func(*ProcNode) bool) (*ProcNode, [][]*ProcNode) {
 	nodes := stack[len(stack)-1]
 
 	for i, node := range nodes {
-		if pred(node.Pid, node.Stats) {
+		if pred(node) {
 			return node, nil
 		}
 
@@ -120,9 +120,7 @@ func iterNodes(stack [][]*ProcNode, pred func(int, map[string]string) bool) (*Pr
 // in which case the 'ps' command gets invoked on the local machine. The list of columns should include
 // only the standard format specifiers for '-o' option of the 'ps' command on the target machine,
 // try 'ps L' for the full list or consult 'ps' man page. An empty column list results in 'ps -eF'
-// invocation. All the metrics are returned 'as-is', without any post-processing.
-// For convenience and in order to be able to build a process tree, 'PID' and 'PPID' columns are
-// always included.
+// invocation. All the metrics values are returned 'as-is', without any post-processing.
 func ProcTree(ssh []string, columns ...string) (*ProcNode, error) {
 	return pstree(concat(ssh, makePsCommand(columns)))
 }
@@ -254,24 +252,28 @@ func buildProcTree(stats []map[string]string) (*ProcNode, error) {
 	nodes := make(map[int]*ProcNode, len(stats))
 
 	for _, stat := range stats {
-		pid, err := getPid(stat, "PID")
+		node := &ProcNode{Stats: stat}
 
-		if err != nil {
+		var err error
+
+		// pid
+		if node.Pid, err = getPid(stat, "PID"); err != nil {
 			return nil, err
 		}
 
-		nodes[pid] = &ProcNode{Pid: pid, Stats: stat}
+		// ppid
+		if node.ParentPid, err = getPid(stat, "PPID"); err != nil {
+			return nil, err
+		}
+
+		delete(stat, "PID")
+		delete(stat, "PPID")
+		nodes[node.Pid] = node
 	}
 
 	// build process tree
 	for _, node := range nodes {
-		ppid, err := getPid(node.Stats, "PPID")
-
-		if err != nil {
-			return nil, err
-		}
-
-		if parent := nodes[ppid]; parent != nil {
+		if parent := nodes[node.ParentPid]; parent != nil {
 			parent.Children = append(parent.Children, node)
 		}
 	}
