@@ -69,7 +69,7 @@ func SSHCommand(host, user, passw string, seconds uint) (cmd []string) {
 type ProcNode struct {
 	Pid      int
 	Stats    map[string]string
-	Children []*ProcNode
+	Children []*ProcNode `json:",omitempty"`
 }
 
 // ForEach applies the given function to each node of the process tree recursively.
