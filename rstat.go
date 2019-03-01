@@ -32,6 +32,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
@@ -130,7 +131,7 @@ func pstree(cmd []string) (*ProcNode, error) {
 
 	var parser psParser
 
-	if err := nonEmptyLines(strit.FromCommand(cmd[0], cmd[1:]...)).Parse(&parser); err != nil {
+	if err := nonEmptyLines(strit.FromCommand(exec.Command(cmd[0], cmd[1:]...))).Parse(&parser); err != nil {
 		return nil, err
 	}
 

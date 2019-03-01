@@ -4,7 +4,7 @@ SRC=rstat.go
 TEST_SRC=rstat_test.go
 
 fmt() {
-	gofmt -w -s $@ && goimports -w $@
+	goimports -w $@
 }
 
 case $1 in
