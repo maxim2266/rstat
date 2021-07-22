@@ -1,7 +1,7 @@
 # rstat
 
 [![GoDoc](https://godoc.org/github.com/maxim2266/rstat?status.svg)](https://godoc.org/github.com/maxim2266/rstat)
-[![Go report](http://goreportcard.com/badge/maxim2266/rstat)](http://goreportcard.com/report/maxim2266/rstat)
+[![Go Report Card](https://goreportcard.com/badge/github.com/maxim2266/rstat)](https://goreportcard.com/report/github.com/maxim2266/rstat)
 
 Library `rstat` provides basic functionality for periodical health check of IoT devices running Linux.
 It has an API for invoking `ps` command on a remote device via `ssh`, returning a process tree with the
